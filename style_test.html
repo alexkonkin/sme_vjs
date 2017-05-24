@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>VisualizeJS Sample</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Network location for the external libraries -->
+  <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script-->
+  
+  <!-- Local storage of the external libraries -->
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <!--script src="./js/jquery.min.js"></script-->
+  <script src="./js/jquery-2.1.1.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
+  
+  <script type='text/javascript' src="http://localhost:8630/jasperserver-pro/client/visualize.js"></script>
+  
+  <link rel="stylesheet" href="./css/custom_pages/main_page.css">
+  <link rel="stylesheet" href="./css/custom_pages/login_form.css">
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="#">Logo</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Projects</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#" id="login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  
+<div class="container-fluid text-center">    
+  <div class="row content">
+    <div class="col-sm-2 sidenav">
+      <p><a href="#">Link</a></p>
+      <p><a href="#">Link</a></p>
+      <p><a href="#">Link</a></p>
+    </div>
+    <div class="col-sm-8 text-left"> 
+      <!--h1>Welcome</h1>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <hr>
+      <h3>Test</h3>  
+      <p>Lorem ipsum...</p-->
+	  <div id="report"></div>
+	  
+    </div>
+    <div class="col-sm-2 sidenav">
+		<p>Input Controls</p>
+		<div class="well">
+			<p>input control should be here</p>
+		</div>
+		<button type="button" id="applyValue">Apply</button> 
+      <!--div class="well">
+        <p>ADS</p>
+      </div-->
+    </div>
+  </div>
+</div>
+
+<!-- Modal login form begin -->
+<div id="id01" class="modal">
+
+  <!--form class="modal-content animate" action="/action_page.php"-->
+  <form class="modal-content animate" id="target" onsubmit="">
+  
+	<div class="container">
+		<label><b>Username</b></label>
+		<input type="text" placeholder="Enter Username" id="j_username" required>
+
+		<label><b>Password</b></label>
+		<input type="password" placeholder="Enter Password" id="j_password" required>
+       
+		<label><b>Organization</b></label>
+		<input type="text" placeholder="Enter Organization Id" id="orgId">
+	   
+		<label class="control select" for="userLocale">
+	    <span class="wrap">Locale:</span>
+	    <select id="userLocale" name="userLocale">
+            <option value="en" selected="">en</option>
+            <option value="de">de</option>
+            <option value="es">es</option>
+            <option value="fr">fr</option>
+            <option value="it">it</option>
+            <option value="ja">ja</option>
+            <option value="pt_BR">pt_BR</option>
+            <option value="zh_CN">zh_CN</option>
+        </select>
+	</label>
+		
+	
+	<label class="control select" for="userTimezone">Time Zone:
+	    <select id="userTimezone" name="userTimezone">
+            <option value="Europe/Helsinki" selected="">Europe/Helsinki - Eastern European Time</option>
+            <option value="America/Los_Angeles">America/Los_Angeles - Pacific Standard Time</option>
+            <option value="America/Denver">America/Denver - Mountain Standard Time</option>
+            <option value="America/Chicago">America/Chicago - Central Standard Time</option>
+            <option value="America/New_York">America/New_York - Eastern Standard Time</option>
+            <option value="Europe/London">Europe/London - Greenwich Mean Time</option>
+            <option value="Europe/Berlin">Europe/Berlin - Central European Time</option>
+            <option value="Europe/Bucharest">Europe/Bucharest - Eastern European Time</option>
+        </select>
+	</label>
+	
+      <!--button type="submit">Login</button-->
+	  <!--input type="submit" id="login" value="Submit">Login</button-->
+  
+    
+  
+	<div class="container" style="background-color:#f1f1f1">
+		<button id="submit" type="submit" form="target" value="Login" class="loginbtn">Login</button>
+		<button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+      <!--span class="psw">Forgot <a href="#">password?</a></span-->
+    </div>
+  
+	</div>
+  </form>
+</div>
+<!-- Modal login form end -->
+
+<footer class="container-fluid text-center">
+  <p>SME Visualize.js Alex Konkin 2017 (c)</p>
+</footer>
+<script>
+$(document).ready(function(){
+    $('#login').click(function(){
+		//detect if which action should be performed
+		if($("#login").text() == ' Login'){
+			$('#id01').css("display",'block');
+		}
+		else{
+			visualize(
+				function (v) {
+					v.logout().done(function(){
+						console.log('user '+ $("#j_username").val() +'logged out');
+						$("#login").html(function (){
+							return $(this).html().replace("<span class=\"glyphicon glyphicon-log-out\"></span> Logout", "<span class=\"glyphicon glyphicon-log-in\"></span> Login"); 
+						});
+					});
+				},
+				function(error){
+					alert(error);
+				}
+			);
+			
+			/*
+			visualize.logout().done(function () {
+				alert("You are now logged out of JasperReports Server.");
+			});
+			*/
+		}
+    });
+});
+
+$( "#target" ).submit(function( event ) {
+	visualize(
+			{
+				server : "http://localhost:8630/jasperserver-pro", 
+				auth: { 
+					name: $("#j_username").val(), 
+					password: $("#j_password").val()
+			}
+			},
+		function (v) {
+				console.log($("#j_username").val());
+				console.log($("#j_password").val());
+				$('#id01').css("display",'none');
+				$("#login").html(function (){
+					return $(this).html().replace("<span class=\"glyphicon glyphicon-log-in\"></span> Login", "<span class=\"glyphicon glyphicon-log-out\"></span> Logout"); 
+				});
+		},
+		function(error){
+			alert(error);
+		}
+	);
+			
+	//alert("I am here");
+	event.preventDefault();
+});
+
+$( "#applyValue" ).click(function() {
+	$("#login").html(function (){
+		return $(this).html().replace("<span class=\"glyphicon glyphicon-log-in\"></span> Login", "<span class=\"glyphicon glyphicon-log-out\"></span> Logout"); 
+	});
+});
+ 
+visualize(
+		function (v) {
+			v("#report").report({resource:"/public/diagnostic/JSDiagnosticReport"});
+		},
+		function(error){
+			alert(error);
+		}
+	);
+
+</script>
+</body>
+</html>

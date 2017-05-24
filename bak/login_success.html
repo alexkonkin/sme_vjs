@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<!-- Provide the URL to visualize.js -->
+<!-- http://localhost/visualize.js -->
+<!--script src="http://localhost:8560/jasperserver-pro/client/visualize.js?logLevel=debug"></script-->
+<script type='text/javascript' src="http://code.jquery.com/jquery-2.1.0.js"></script>
+<script type='text/javascript' src="http://localhost:8630/jasperserver-pro/client/visualize.js"></script>
+
+<script>
+ 
+visualize(
+{
+ function (v) {
+	v("#container").report({resource:"/public/diagnostic/JSDiagnosticReport"});
+},
+function(error){
+ alert(error);
+}
+);
+</script>
+
+<head>
+<style>
+html, body {
+}
+table.sample {
+    width: 100%;
+}
+td#c1, td#c2, td#c3, td#c4 {
+    width: 50%;
+}
+</style>
+</head>
+
+<body>
+    
+<h3>Test report</h3>
+<div id="container"<div>Why Jaspersoft</div></div>
+
+</body>
+
+</html>
+
+
+
