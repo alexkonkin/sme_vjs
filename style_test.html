@@ -30,14 +30,14 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-      <a class="navbar-brand" href="#">Logo</a>
+      <a class="navbar-brand" href="#">SME</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
-        <li><a href="#">About</a></li>
+        <!--li><a href="#">About</a></li>
         <li><a href="#">Projects</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="#">Contact</a></li-->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#" id="login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
@@ -53,7 +53,33 @@
       <p><a href="#">Link</a></p>
       <p><a href="#">Link</a></p>
     </div>
-    <div class="col-sm-8 text-left"> 
+    <div class="col-sm-8 text-left">
+		<div class="container" style="background-color:#f1f1f1">
+		  	<button class="btn btn-default btn-sm navLeft" type="button">
+				<span class="glyphicon glyphicon-fast-backward"></span>
+			</button>
+			<button class="btn btn-default btn-sm navLeft" type="button">
+				<span class="glyphicon glyphicon-step-backward"></span>
+			</button>
+			<input type="text" id="currentPage" class="form-control input-sm pull-left col-xs-2">
+			<input type="text" id="totalPages" class="form-control input-sm pull-left col-xs-2">
+			<button class="btn btn-default btn-sm navLeft" type="button">
+				<span class="glyphicon glyphicon-step-forward"></span>
+			</button>
+			<button class="btn btn-default btn-sm navLeft" type="button">
+				<span class="glyphicon glyphicon-fast-forward"></span>
+			</button>
+			<div class="dropdown pull-left dropdown-toggle col-xs-2">
+				<button class="btn btn-default input-sm" type="button" id="menu1" data-toggle="dropdown">Export to:
+					<span class="caret"></span></button>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+							<li role="presentation"><a role="menuitem" tabindex="1" href="#">PDF</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="2" href="#">XLS</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="3" href="#">DOC</a></li>
+						</ul>
+			</div>
+      <!--span class="psw">Forgot <a href="#">password?</a></span-->
+        </div>
       <!--h1>Welcome</h1>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
       <hr>
@@ -62,6 +88,7 @@
 	  <div id="report"></div>
 	  
     </div>
+	
     <div class="col-sm-2 sidenav">
 		<p>Input Controls</p>
 		<div class="well">
@@ -167,6 +194,24 @@ $(document).ready(function(){
 			*/
 		}
     });
+	
+	//https://stackoverflow.com/questions/13437446/how-to-display-selected-item-in-bootstrap-button-dropdown-title
+	/*
+	$('.dropdown').each(function (key, dropdown) {
+        var $dropdown = $(dropdown);
+        $dropdown.find('.dropdown-menu a').on('click', function () {
+            $dropdown.find('button').text($(this).text()).append(' <span class="caret"></span>');
+			alert($(this).text());
+        });
+    });
+	*/
+	$('.dropdown').each(function (key, dropdown) {
+        var $dropdown = $(dropdown);
+        $dropdown.find('.dropdown-menu a').on('click', function () {
+ 			alert($(this).text());
+        });
+    });
+	
 });
 
 $( "#target" ).submit(function( event ) {
