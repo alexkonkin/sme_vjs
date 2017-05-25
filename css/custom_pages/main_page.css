@@ -51,6 +51,10 @@ button {
 	float: left;
 }
 
+#of{
+    margin: 10px 5px 10px;
+}
+
 button:hover {
     opacity: 0.8;
 }

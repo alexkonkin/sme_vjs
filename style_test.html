@@ -22,6 +22,11 @@
 </head>
 <body>
 
+
+<!--
+the initial design of this page has been taken from w3schools site
+https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_temp_webpage&stacked=h
+-->
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -34,10 +39,12 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
+	  <!--
         <li class="active"><a href="#">Home</a></li>
-        <!--li><a href="#">About</a></li>
+        <li><a href="#">About</a></li>
         <li><a href="#">Projects</a></li>
-        <li><a href="#">Contact</a></li-->
+        <li><a href="#">Contact</a></li>
+	  -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#" id="login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
@@ -62,6 +69,8 @@
 				<span class="glyphicon glyphicon-step-backward"></span>
 			</button>
 			<input type="text" id="currentPage" class="form-control input-sm pull-left col-xs-2">
+			<!--input type="text" id="totalPages" class="form-control input-sm pull-left col-xs-0"-->
+			<p id="of" class="pull-left col-xs-0">of</p>
 			<input type="text" id="totalPages" class="form-control input-sm pull-left col-xs-2">
 			<button class="btn btn-default btn-sm navLeft" type="button">
 				<span class="glyphicon glyphicon-step-forward"></span>
@@ -253,7 +262,49 @@ visualize(
 		function(error){
 			alert(error);
 		}
-	);
+);
+
+$('#applyValue').click(function(){
+visualize(
+		function (v) {
+		
+			var query = v.resourcesSearch({
+			server:"http://localhost:8630/jasperserver-pro",
+			folderUri: "/public/SME",
+			recursive: false,
+			runImmediately : false
+			});
+
+			query.run().done(function(results){
+				console.log(results);
+			});
+		
+		
+		
+		},
+		function(error){
+			alert(error);
+		}
+);
+
+/*
+visualize(
+		function (v) {
+	var query = visualize.resourcesSearch({
+		server:"http://localhost:8080/jasperserver-pro",
+		folderUri: "/public/SME",
+		recursive: false,
+		runImmediately : false
+	});
+
+	query.run().done(function(results){
+		console.log(results);
+	});
+	}
+);
+*/	
+});
+
 
 </script>
 </body>
