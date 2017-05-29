@@ -55,10 +55,16 @@ https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_temp_webpage&stacke
   
 <div class="container-fluid text-center">    
   <div class="row content">
-    <div class="col-sm-2 sidenav">
-      <p><a href="#">Link</a></p>
-      <p><a href="#">Link</a></p>
-      <p><a href="#">Link</a></p>
+	<!-- https://stackoverflow.com/questions/432174/how-to-store-arbitrary-data-for-some-html-tags -->
+    <div class="col-sm-2 sidenav" id="reportsList">
+		<!--
+      <p><a href="#" data-report="{"id": 1, "title":"Something"}" >09. Customer Detail Report</a></p>
+	  <p><a class="article" href="#"><data value="21053">Text of Link
+			<span style="display: none;">{"id": 1, "title":"Something"}</span>
+	  </a></p>
+      <p><a href="#" >Link</a></p>
+      <p><a href="#" >Link</a></p>
+	  -->
     </div>
     <div class="col-sm-8 text-left">
 		<div class="container" style="background-color:#f1f1f1">
@@ -195,12 +201,6 @@ $(document).ready(function(){
 					alert(error);
 				}
 			);
-			
-			/*
-			visualize.logout().done(function () {
-				alert("You are now logged out of JasperReports Server.");
-			});
-			*/
 		}
     });
 	
@@ -244,20 +244,20 @@ $( "#target" ).submit(function( event ) {
 			alert(error);
 		}
 	);
-			
-	//alert("I am here");
+
 	event.preventDefault();
 });
 
-$( "#applyValue" ).click(function() {
-	$("#login").html(function (){
-		return $(this).html().replace("<span class=\"glyphicon glyphicon-log-in\"></span> Login", "<span class=\"glyphicon glyphicon-log-out\"></span> Logout"); 
-	});
-});
- 
+//if user is logged in, render a list of reports in the window on the left
+//and run the firts report from list in the window in the middle of the screen
+
+function isLoggedIn(){
+
+}
+
 visualize(
 		function (v) {
-			v("#report").report({resource:"/public/diagnostic/JSDiagnosticReport"});
+			//v("#report").report({resource:"/public/diagnostic/JSDiagnosticReport"});
 		},
 		function(error){
 			alert(error);
@@ -265,9 +265,13 @@ visualize(
 );
 
 $('#applyValue').click(function(){
+
+alert($("#login").text());
+
 visualize(
 		function (v) {
-		
+			var content="";
+			
 			var query = v.resourcesSearch({
 			server:"http://localhost:8630/jasperserver-pro",
 			folderUri: "/public/SME",
@@ -276,33 +280,26 @@ visualize(
 			});
 
 			query.run().done(function(results){
-				console.log(results);
+				buildReportItems(results);
 			});
-		
-		
-		
 		},
 		function(error){
 			alert(error);
 		}
 );
 
-/*
-visualize(
-		function (v) {
-	var query = visualize.resourcesSearch({
-		server:"http://localhost:8080/jasperserver-pro",
-		folderUri: "/public/SME",
-		recursive: false,
-		runImmediately : false
-	});
-
-	query.run().done(function(results){
-		console.log(results);
-	});
+function buildReportItems(results){
+	var reportsList = '';
+	
+	function buildReportItem(control){
+		var template = "<p><a href='#' class='resourceItem' data-reportItem={data} >{reportName}</a></p>";
+		reportsList+=template.replace("{data}", JSON.stringify(control).replace(/\"/g, "'")).replace("{reportName}", control.label);
 	}
-);
-*/	
+
+	results.forEach(buildReportItem);
+	$("#reportsList").append($(reportsList));
+	//$("#reportsList").css( "border", "3px solid red" );
+}
 });
 
 
