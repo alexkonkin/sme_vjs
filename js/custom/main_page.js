@@ -112,14 +112,19 @@ if(isLoggedIn() == true){
 
 	function buildReportItems(results){
 		var reportsList = '';
-	
+		
 		function buildReportItem(control){
 			var template = "<p><a href='#' class='resourceItem' data-ri='{data}' >{reportName}</a></p>";
 			reportsList+=template.replace("{data}", JSON.stringify(control)).replace("{reportName}", control.label);
 		}
-
+		
 		results.forEach(buildReportItem);
 		$("#reportsList").append($(reportsList));
+		
+		$( ".resourceItem" ).each(function() {
+			$(this).on( "click", runReport);
+		});
+		
 		//$("#reportsList").css( "border", "3px solid red" );
 		renderFirstItem();
 	}
@@ -135,7 +140,18 @@ if(isLoggedIn() == true){
 				container: "#report"
 			});
 		});
-	}	
+	}
+}
+
+function runReport(){
+	var jsonInfoAboutObject = $(this).data("ri");
+	visualize(
+		function (v) {
+			var report = v.report({
+				resource: jsonInfoAboutObject.uri,
+				container: "#report"
+			});
+		});	
 }
 
 function clearListAndReportOutput(){
@@ -145,15 +161,6 @@ function clearListAndReportOutput(){
 }
 
 $('#applyValue').click(function(){
-var jsonInfoAboutObject = $("#reportsList").first().children().eq(0).first().children().data("ri");
-	console.log(jsonInfoAboutObject.uri);
+	console.log("applyValue on click test method");
 	
-		visualize(
-			function (v) {
-				var report = v.report({
-				resource: jsonInfoAboutObject.uri,
-				container: "#report"
-			});
-		});
-
 });
