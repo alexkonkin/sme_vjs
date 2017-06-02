@@ -1,3 +1,8 @@
+//this variale is used to store a reference
+//to perform the export of the report whose output
+//is currently visible in the center panel of the application
+var report;
+
 $(document).ready(function(){
     $('#login').click(function(){
 		//detect if which action should be performed
@@ -37,11 +42,28 @@ $(document).ready(function(){
 	$('.dropdown').each(function (key, dropdown) {
         var $dropdown = $(dropdown);
         $dropdown.find('.dropdown-menu a').on('click', function () {
- 			alert($(this).text());
+ 			doExport($(this).text());
         });
     });
 	
 });
+
+function doExport(format){
+	visualize(
+		function (v) {
+		report.export({
+				outputFormat: format
+			})
+			.done(function (link) {
+				window.open(link.href); // open new window to download report
+			})
+			.fail(function (err) {
+				alert(err.message);
+			});
+			
+	});
+	
+}
 
 $( "#target" ).submit(function( event ) {
 	visualize(
@@ -135,10 +157,12 @@ if(isLoggedIn() == true){
 	
 		visualize(
 			function (v) {
-				var report = v.report({
+				//var report = v.report({
+				report = v.report({
 				resource: jsonInfoAboutObject.uri,
 				container: "#report"
 			});
+			
 		});
 	}
 }
@@ -147,7 +171,8 @@ function runReport(){
 	var jsonInfoAboutObject = $(this).data("ri");
 	visualize(
 		function (v) {
-			var report = v.report({
+			//var report = v.report({
+			report = v.report({
 				resource: jsonInfoAboutObject.uri,
 				container: "#report"
 			});
