@@ -46,7 +46,37 @@ $(document).ready(function(){
         });
     });
 	
+	//connect event hanglers to the navigation buttons
+	//$("#btnFirst").on("click", namedFunction);
+	$("#btnPrevious").on("click", navigatePreviousPage);
+	$("#btnNext").on("click", navigateNextPage);
+	//$("#btnLast").on("click", namedFunction);
 });
+
+function navigateNextPage(){
+	visualize(
+		function (v) {
+		var currentPage = report.pages() || 1;
+		report
+		.pages(++currentPage)
+		.run()
+		.fail(function(err) { alert(err); });	
+	});
+}
+
+function navigatePreviousPage(){
+	visualize(
+		function (v) {
+		var currentPage = report.pages() || 1;
+		report
+		.pages(--currentPage)
+		.run()
+		.fail(function(err) { alert(err); });	
+	});
+
+}
+
+
 
 function doExport(format){
 	visualize(
@@ -64,6 +94,8 @@ function doExport(format){
 	});
 	
 }
+
+
 
 $( "#target" ).submit(function( event ) {
 	visualize(
