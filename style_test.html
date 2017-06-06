@@ -10,8 +10,8 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script-->
   
   <!-- Local storage of the external libraries -->
+  
   <link rel="stylesheet" href="./css/bootstrap.min.css">
-  <!--script src="./js/jquery.min.js"></script-->
   <script src="./js/jquery-2.1.1.js"></script>
   <script src="./js/bootstrap.min.js"></script>
   
@@ -57,27 +57,21 @@ https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_temp_webpage&stacke
   <div class="row content">
 	<!-- https://stackoverflow.com/questions/432174/how-to-store-arbitrary-data-for-some-html-tags -->
     <div class="col-sm-2 sidenav" id="reportsList">
-		<!--
-      <p><a href="#" data-report="{"id": 1, "title":"Something"}" >09. Customer Detail Report</a></p>
-	  <p><a class="article" href="#"><data value="21053">Text of Link
-			<span style="display: none;">{"id": 1, "title":"Something"}</span>
-	  </a></p>
-      <p><a href="#" >Link</a></p>
-      <p><a href="#" >Link</a></p>
-	  -->
+
     </div>
     <div class="col-sm-8 text-left">
-		<div class="container" style="background-color:#f1f1f1">
+		<div class="container" id="functCont" style="background-color:#f1f1f1;">
 		  	<button class="btn btn-default btn-sm navLeft" type="button" id="btnFirst">
 				<span class="glyphicon glyphicon-fast-backward"></span>
 			</button>
 			<button class="btn btn-default btn-sm navLeft" type="button" id="btnPrevious">
 				<span class="glyphicon glyphicon-step-backward"></span>
 			</button>
-			<input type="text" id="currentPage" class="form-control input-sm pull-left col-xs-2">
-			<!--input type="text" id="totalPages" class="form-control input-sm pull-left col-xs-0"-->
+
+			<input type="text" id="currentPage" class="form-control input-sm pull-left col-xs-2 col-centered">
 			<p id="of" class="pull-left col-xs-0">of</p>
 			<input type="text" id="totalPages" class="form-control input-sm pull-left col-xs-2">
+
 			<button class="btn btn-default btn-sm navLeft" type="button" id="btnNext">
 				<span class="glyphicon glyphicon-step-forward"></span>
 			</button>
@@ -93,26 +87,19 @@ https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_temp_webpage&stacke
 							<li role="presentation"><a role="menuitem" tabindex="3" href="#">DOCX</a></li>
 						</ul>
 			</div>
-      <!--span class="psw">Forgot <a href="#">password?</a></span-->
         </div>
-      <!--h1>Welcome</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-      <hr>
-      <h3>Test</h3>  
-      <p>Lorem ipsum...</p-->
 	  <div id="report"></div>
 	  
     </div>
 	
     <div class="col-sm-2 sidenav">
-		<p>Input Controls</p>
-		<div class="well">
-			<p>input control should be here</p>
+		<div class="container" id="icCont">
+			<p>Input Controls</p>
+			<div class="well">
+				<p>input control should be here</p>
+			</div>
+			<button type="button" id="applyValue">Apply</button>
 		</div>
-		<button type="button" id="applyValue">Apply</button> 
-      <!--div class="well">
-        <p>ADS</p>
-      </div-->
     </div>
   </div>
 </div>
@@ -160,11 +147,6 @@ https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_temp_webpage&stacke
             <option value="Europe/Bucharest">Europe/Bucharest - Eastern European Time</option>
         </select>
 	</label>
-	
-      <!--button type="submit">Login</button-->
-	  <!--input type="submit" id="login" value="Submit">Login</button-->
-  
-    
   
 	<div class="container" style="background-color:#f1f1f1">
 		<button id="submit" type="submit" form="target" value="Login" class="loginbtn">Login</button>

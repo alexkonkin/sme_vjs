@@ -47,8 +47,9 @@ button {
 }
 
 #currentPage, #totalPages{
-    width: 20px;
+    width: 70px;
 	float: left;
+	text-align:center;
 }
 
 #of{

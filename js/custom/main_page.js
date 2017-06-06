@@ -47,11 +47,22 @@ $(document).ready(function(){
     });
 	
 	//connect event hanglers to the navigation buttons
-	//$("#btnFirst").on("click", namedFunction);
+	$("#btnFirst").on("click", navigateFirstPage);
 	$("#btnPrevious").on("click", navigatePreviousPage);
 	$("#btnNext").on("click", navigateNextPage);
-	//$("#btnLast").on("click", namedFunction);
+	$("#btnLast").on("click", navigateLastPage);
 });
+
+function navigateFirstPage(){
+	visualize(
+		function (v) {
+		var currentPage = report.pages() || 1;
+		report
+		.pages(1)
+		.run()
+		.fail(function(err) { alert(err); });	
+	});
+}
 
 function navigateNextPage(){
 	visualize(
@@ -73,10 +84,18 @@ function navigatePreviousPage(){
 		.run()
 		.fail(function(err) { alert(err); });	
 	});
-
 }
 
-
+function navigateLastPage(){
+	visualize(
+		function (v) {
+		var currentPage = report.pages() || 1;
+		report
+		.pages(totalPages)
+		.run()
+		.fail(function(err) { alert(err); });	
+	});
+}
 
 function doExport(format){
 	visualize(
@@ -192,7 +211,19 @@ if(isLoggedIn() == true){
 				//var report = v.report({
 				report = v.report({
 				resource: jsonInfoAboutObject.uri,
-				container: "#report"
+				container: "#report",
+				events: {
+					reportCompleted: function(status){
+						console.log("Report status "+status);
+					},
+					changeTotalPages: function(totalPages) {
+						console.log("Total Pages:" + totalPages);
+						setFirstAndLastPageNumbers(1, totalPages);
+					}
+				},
+				error: function(error) {
+						console.log("Report error "+error);
+				}
 			});
 			
 		});
@@ -206,9 +237,26 @@ function runReport(){
 			//var report = v.report({
 			report = v.report({
 				resource: jsonInfoAboutObject.uri,
-				container: "#report"
+				container: "#report",
+				events: {
+					reportCompleted: function(status){
+						console.log("Report status "+status);
+					},
+					changeTotalPages: function(totalPages) {
+						console.log("Total Pages:" + totalPages);
+						setFirstAndLastPageNumbers(1, totalPages);
+					}
+				},
+				error: function(error) {
+						console.log("Report error "+error);
+				}
 			});
 		});	
+}
+
+function setFirstAndLastPageNumbers(firstPageNumber, lastPageNumber){
+	$("#currentPage").val(firstPageNumber);
+	$("#totalPages").val(lastPageNumber);
 }
 
 function clearListAndReportOutput(){
@@ -219,5 +267,5 @@ function clearListAndReportOutput(){
 
 $('#applyValue').click(function(){
 	console.log("applyValue on click test method");
-	
+	setFirstAndLastPageNumbers("1", "10")
 });
