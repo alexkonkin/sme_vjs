@@ -14,8 +14,10 @@
   <link rel="stylesheet" href="./css/bootstrap.min.css">
   <script src="./js/jquery-2.1.1.js"></script>
   <script src="./js/bootstrap.min.js"></script>
+  <script src="http://underscorejs.org/underscore-min.js"></script>
   
-  <script type='text/javascript' src="http://localhost:8630/jasperserver-pro/client/visualize.js"></script>
+  <script type='text/javascript' src="http://localhost:8630/jasperserver-pro/client/visualize.js?_opt=false&logLevel=debug"></script>
+  <!--script type='text/javascript' src="http://10.98.51.108:8630/jasperserver-pro/client/visualize.js"></script-->
   
   <link rel="stylesheet" href="./css/custom_pages/main_page.css">
   <link rel="stylesheet" href="./css/custom_pages/login_form.css">
@@ -95,8 +97,9 @@ https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_temp_webpage&stacke
     <div class="col-sm-2 sidenav">
 		<div class="container" id="icCont">
 			<p>Input Controls</p>
-			<div class="well">
-				<p>input control should be here</p>
+			<div id="forIC" style="display:none;"></div>
+			<div class="well" id="ic">
+				<!--p>input control should be here</p-->
 			</div>
 			<button type="button" id="applyValue">Apply</button>
 		</div>
