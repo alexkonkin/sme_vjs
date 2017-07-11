@@ -2,6 +2,9 @@
 //to perform the export of the report whose output
 //is currently visible in the center panel of the application
 var report;
+var params_data;
+var host="http://localhost:8630/jasperserver-pro";
+//var host="http://10.98.50.212:8630/jasperserver-pro";
 
 $(document).ready(function(){
     $('#login').click(function(){
@@ -119,8 +122,7 @@ function doExport(format){
 $( "#target" ).submit(function( event ) {
 	visualize(
 			{
-				server : "http://localhost:8630/jasperserver-pro",
-				//server : "http://10.98.51.108:8630/jasperserver-pro", 
+				server : host,
 				auth: { 
 					name: $("#j_username").val(), 
 					password: $("#j_password").val()
@@ -168,8 +170,7 @@ if(isLoggedIn() == true){
 			var content="";
 			
 			var query = v.resourcesSearch({
-			server:"http://localhost:8630/jasperserver-pro",
-			//server:"http://10.98.51.108:8630/jasperserver-pro",
+			server: host,
 			folderUri: "/public/SME",
 			recursive: false,
 			runImmediately : false
@@ -253,50 +254,51 @@ function runReport(){
 						console.log("Report error "+error);
 				}
 			});
+			
+			//scan for input controls, if they present, build them
+			/*
+			console.log ("areInputControlsPresent(jsonInfoAboutObject.uri)");
+			
+			function callback(data){
+				console.log(data.length > 0 ? true : false);
+			}
+			console.log(areInputControlsPresent(jsonInfoAboutObject.uri, callback));
+			*/
+			removeInputControlsAndEvents();
+			buildInputControls(jsonInfoAboutObject.uri);			
 		});	
 }
 
-function setFirstAndLastPageNumbers(firstPageNumber, lastPageNumber){
-	$("#currentPage").val(firstPageNumber);
-	$("#totalPages").val(lastPageNumber);
-}
-
-function clearListAndReportOutput(){
-	$("#reportsList").empty();
-	$("#report").empty();
-	
-}
-
-function manageFunctionalAndIcPanels(idArray, isVisible){
-	$.each(idArray, function(index, value){
-		console.log(value+" "+isVisible);
-	});
-	//$("#functCont").css("display","none");
-	//$("#icCont").css("display","none");
-}
-
-
-
-$('#applyValue').click(function(){
-	console.log("applyValue on click test method");
-	//manageFunctionalAndIcPanels(["one","two"], "false");
-	/*
-	var template = "<label>{label}</label><p><select id='customerId'>{options}</select><br>",
-	content = template.replace("{label}", control.label).replace("{options}", buildOptions(control.state.options));
-	$("#contInputControl").append($(content));
-	*/
-	
-visualize(
-	function (v) {	
+function areInputControlsPresent(reportUri, callback){
+	var result;
+	visualize(function(v){
 		var ic = v.inputControls({
-			resource: "/organizations/organization_1/adhoc/topics/Cascading_multi_select_topic",
+			resource: reportUri,
 			success: function(data) {
+				callback(data);
+			}
+		});
+	});
+
+}
+
+function removeInputControlsAndEvents(){
+	$("#ic").empty();	
+}
+
+function buildInputControls(reportUri){
+	visualize(function(v){
+		var ic = v.inputControls({
+			resource: reportUri,
+			success: function(data) {
+			//if the report has input controls, continue processing
+			if(data.length > 0){
 				var icDefinition = "";
+				console.log("DATA " + data.length);
+				
 				for(var i = 0; i < data.length; i++){
 					//console.log(data[i]);
 					switch(data[i].type) {
-					//var template = "<p><a href='#' class='resourceItem' data-ri='{data}' >{reportName}</a></p>";
-			        //reportsList+=template.replace("{data}", JSON.stringify(control)).replace("{reportName}", control.label);
 						case 'singleSelect':
 							var icTemplate="<div id='cont_{id}' ><p>{description}</p>{ic}</div>";
 							var icTag="<select name='ic_{inputControlId}' data-slave='{data}' data-master='{master}' data-type={type}>{options}</select>;";
@@ -353,7 +355,7 @@ visualize(
 					$(document).on('change', "select[name*='ic_"+data[m].id+"']", function(){
 							var icName = $(this).attr('name');
 						
-							var params_data = {};
+							params_data = {};
 							
 							//current ic
 							if($(this).data('type') == 'multiSelect'){							
@@ -386,22 +388,8 @@ visualize(
 									params_data[$(this).data('slave')[e]] = [$("select[name*='ic_" + $(this).data('slave')[e] + "']").val()];
 								}
 							}
-							
-							
-							/*
-							for(var n = 0; n < $(this).data('slave').length; n++){
-							    console.log("ic name "+ 'ic_'+$(this).data('slave')[n]);
-								console.log("ic value "+ $("select[name*='ic_"+$(this).data('slave')[n]+"']").val());
-								if($(this).data('type') == 'multiSelect'){							
-									params_data[$(this).data('slave')[n]] = $("select[name*='ic_"+$(this).data('slave')[n]+"']").val();
-								}
-								else if ($(this).data('type') == 'singleSelect'){
-									params_data[$(this).data('slave')[n]] = [$("select[name*='ic_"+$(this).data('slave')[n]+"']").val()];
-								}
-							}
-							*/
-							
-							var reportUri = "/public/SME/Cascading_multi_select_topic";
+										
+							//var reportUri = "/public/SME/Cascading_multi_select_topic";
 							//var report = v.report({ resource: reportUri, container: "#report"});
 							
 							var inputControls = v.inputControls({
@@ -447,36 +435,69 @@ visualize(
 								console.log("---------- ic data ----------");
 							}
 							
-							//var report = v.report({ resource: reportUri, container: "#forIC" });
+							/*
 							var report = v.report({ resource: reportUri, container: "#report" });
 							console.log("params data before rendering");
 							console.log(JSON.stringify(params_data));
 							console.log("params data before rendering");
 							report.params(params_data);
 							report.run();
-							
-							/*
-							for(var n = 0; n < $(this).data('slave').length; n++){
-							    console.log("ic name "+ 'ic_'+$(this).data('slave')[n]);
-								console.log("ic value "+ $("select[name*='ic_"+$(this).data('slave')[n]+"']").val());
-								params_data[$(this).data('slave')[n]] = [$("select[name*='ic_"+$(this).data('slave')[n]+"']").val()];
-							}
 							*/
 							
-							//params_data[$(this).data('slave')[0]] = [$("select[name*='ic_"+$(this).data('slave')[0]+"']").val()];
-							//params_data[$(this).data('slave')[1]] = $("select[name*='ic_"+$(this).data('slave')[1]+"']").val();
-							
-					});
-					/*
-					$("#ic_"+data[m].id).on("change", function() {
-						//report.params({ "Product_Family": [$(this).val()] }).run();
-						alert("change should be applied to "+data[m].slaveDependencies);
-					});
-					*/
-					
-
-				}
+						});
+					}
+				}//if the report has input controls, continue processing
 			}
-		}); //
-	});			
+		});
+	});
+}
+
+function setFirstAndLastPageNumbers(firstPageNumber, lastPageNumber){
+	$("#currentPage").val(firstPageNumber);
+	$("#totalPages").val(lastPageNumber);
+}
+
+function clearListAndReportOutput(){
+	$("#reportsList").empty();
+	$("#report").empty();
+	
+}
+
+function manageFunctionalAndIcPanels(idArray, isVisible){
+	$.each(idArray, function(index, value){
+		console.log(value+" "+isVisible);
+	});
+	//$("#functCont").css("display","none");
+	//$("#icCont").css("display","none");
+}
+
+$('#testSolution').click(function(){
+   $("#ic").empty();
+
+});
+
+function runReportWithSelectedParams(){
+visualize(
+	function (v) {	
+				console.log("report");
+				console.log(JSON.stringify(report));
+						
+							//var params_data = {};
+						
+							var reportUri = "/public/SME/Cascading_multi_select_topic";
+							//var report = v.report({ resource: reportUri, container: "#report"});
+							
+							//var report = v.report({ resource: reportUri, container: "#report" });
+							console.log("params data before rendering");
+							console.log(JSON.stringify(params_data));
+							console.log("params data before rendering");
+							report.params(params_data);
+							report.run();
+			
+	});//visualize			
+}
+
+$('#applyValue').click(function(){
+	console.log("applyValue on click test method");
+	runReportWithSelectedParams();
 });
