@@ -63,7 +63,9 @@ function navigateFirstPage(){
 		report
 		.pages(1)
 		.run()
-		.fail(function(err) { alert(err); });	
+		.fail(function(err) { alert(err); });
+
+		$("#currentPage").val("1");
 	});
 }
 
@@ -74,7 +76,9 @@ function navigateNextPage(){
 		report
 		.pages(++currentPage)
 		.run()
-		.fail(function(err) { alert(err); });	
+		.fail(function(err) { alert(err); });
+
+		$("#currentPage").val(currentPage);
 	});
 }
 
@@ -85,7 +89,9 @@ function navigatePreviousPage(){
 		report
 		.pages(--currentPage)
 		.run()
-		.fail(function(err) { alert(err); });	
+		.fail(function(err) { alert(err); });
+
+		$("#currentPage").val(currentPage);
 	});
 }
 
@@ -94,9 +100,10 @@ function navigateLastPage(){
 		function (v) {
 		var currentPage = report.pages() || 1;
 		report
-		.pages(totalPages)
+		.pages($("#totalPages").val())
 		.run()
-		.fail(function(err) { alert(err); });	
+		.fail(function(err) { alert(err); });
+		$("#currentPage").val($("#totalPages").val());
 	});
 }
 
@@ -228,7 +235,8 @@ if(isLoggedIn() == true){
 						console.log("Report error "+error);
 				}
 			});
-			
+			removeInputControlsAndEvents();
+			buildInputControls(jsonInfoAboutObject.uri);	
 		});
 	}
 }
@@ -346,13 +354,52 @@ function buildInputControls(reportUri){
 							
 							$("#ic").append(ic);							
 						break;
+						case 'singleSelectRadio':
+							var icTemplate="<div id='cont_{id}'><p>{description}</p>{ic}</div>";
+							var icTag="<form action='' id='ic_{inputControlId}'>{options}</form>";
+							var optionTag="<input type='radio' name='{id}' data-slave='{data}' data-master='{master}' data-type={type} value='{value}' {checked}> {label}<br>";
+							var options="";
+							var ic="";
+							for(var n = 0; n < data[i].state.options.length; n++){
+								options +=optionTag.replace("{value}", data[i].state.options[n].value)
+										 .replace("{label}", data[i].state.options[n].label)
+										 .replace("{id}", data[i].id)
+										 .replace("{data}", JSON.stringify(data[i].slaveDependencies))
+										 .replace("{master}", JSON.stringify(data[i].masterDependencies))
+										 .replace("{type}", JSON.stringify(data[i].type))
+										 .replace("{checked}", data[i].state.options[n].selected ? "checked":"");
+							}
+							options = icTag.replace("{inputControlId}", data[i].id).
+											replace("{options}", options);
+
+							ic = icTemplate.replace("{id}", data[i].id).
+											replace("{description}", data[i].description).
+											replace("{ic}",options);
+							
+							$("#ic").append(ic);							
+						break;
 					} 
 				}
 
 				//bind onChange events to appropriate input controls
 				for(var m = 0; m < data.length; m++){
+					console.log("binding to event");
 					console.log(data[m]);
-					$(document).on('change', "select[name*='ic_"+data[m].id+"']", function(){
+					var resourceName = "";
+					//detect a type of event that should be connected to the IC
+					switch(data[m].type) {
+						case 'singleSelect':
+							resourceName = "select[name*='ic_"+data[m].id+"']";
+						break;
+						case 'multiSelect':
+							resourceName = "select[name*='ic_"+data[m].id+"']";
+						break;
+						case 'singleSelectRadio':
+							resourceName = "input[name*='"+data[m].id+"']";
+						break;
+					}
+
+					$(document).on('change', resourceName, function(){
 							var icName = $(this).attr('name');
 						
 							params_data = {};
@@ -364,7 +411,10 @@ function buildInputControls(reportUri){
 							else if ($(this).data('type') == 'singleSelect'){
 								params_data[$(this).attr('name').substring(3)] = [$(this).val()];
 							}
-
+							else if ($(this).data('type') == 'singleSelectRadio'){
+								params_data[$(this).attr('name')] = [$(this).val()];
+							}
+							
 							//master ic
 							for(var d = 0; d < $(this).data('master').length; d++){
 								console.log("master");
@@ -375,6 +425,10 @@ function buildInputControls(reportUri){
 								else if ($("select[name*='ic_" + $(this).data('master')[d] + "']").data('type') == 'singleSelect'){
 									params_data[$(this).data('master')[d]] = [$("select[name*='ic_" + $(this).data('master')[d] + "']").val()];
 								}
+								else if ($("input[name*='" + $(this).data('master')[d] + "']").data('type') == 'singleSelectRadio'){
+									params_data[$(this).data('master')[d]] = [$("input[name*='" + $(this).data('master')[d] + "']").val()];
+								}
+	
 							}
 							
 							//slave
@@ -386,6 +440,9 @@ function buildInputControls(reportUri){
 								}
 								else if ($("select[name*='ic_" + $(this).data('slave')[e] + "']").data('type') == 'singleSelect'){
 									params_data[$(this).data('slave')[e]] = [$("select[name*='ic_" + $(this).data('slave')[e] + "']").val()];
+								}
+								else if ($("input[name*='" + $(this).data('master')[d] + "']").data('type') == 'singleSelectRadio'){
+									params_data[$(this).data('master')[d]] = [$("input[name*='" + $(this).data('master')[d] + "']").val()];
 								}
 							}
 										
@@ -472,8 +529,10 @@ function manageFunctionalAndIcPanels(idArray, isVisible){
 }
 
 $('#testSolution').click(function(){
-   $("#ic").empty();
-
+   $(document).on('change', "input[name*='IS_IGNORE_PAGINATION']", function(){
+			console.log("radio click "+$(this).val());
+			
+   });
 });
 
 function runReportWithSelectedParams(){
