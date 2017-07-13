@@ -214,12 +214,12 @@ if(isLoggedIn() == true){
 
 	function renderFirstItem(){
 	var jsonInfoAboutObject = $("#reportsList").first().children().eq(0).first().children().data("ri");
+	$("#forIC").data('ri', jsonInfoAboutObject);
 	console.log(jsonInfoAboutObject.uri);
 	
 		visualize(
 			function (v) {
-				//var report = v.report({
-				report = v.report({
+				var reportLocal = v.report({
 				resource: jsonInfoAboutObject.uri,
 				container: "#report",
 				events: {
@@ -235,6 +235,7 @@ if(isLoggedIn() == true){
 						console.log("Report error "+error);
 				}
 			});
+			report = reportLocal;
 			removeInputControlsAndEvents();
 			buildInputControls(jsonInfoAboutObject.uri);	
 		});
@@ -243,10 +244,11 @@ if(isLoggedIn() == true){
 
 function runReport(){
 	var jsonInfoAboutObject = $(this).data("ri");
+	$("#forIC").data('ri', jsonInfoAboutObject);
 	visualize(
 		function (v) {
-			//var report = v.report({
-			report = v.report({
+			console.log(JSON.stringify(report));
+			var reportLocal = v.report({
 				resource: jsonInfoAboutObject.uri,
 				container: "#report",
 				events: {
@@ -262,7 +264,7 @@ function runReport(){
 						console.log("Report error "+error);
 				}
 			});
-			
+			report = reportLocal;
 			//scan for input controls, if they present, build them
 			/*
 			console.log ("areInputControlsPresent(jsonInfoAboutObject.uri)");
@@ -305,7 +307,6 @@ function buildInputControls(reportUri){
 				console.log("DATA " + data.length);
 				
 				for(var i = 0; i < data.length; i++){
-					//console.log(data[i]);
 					switch(data[i].type) {
 						case 'singleSelect':
 							var icTemplate="<div id='cont_{id}' ><p>{description}</p>{ic}</div>";
@@ -318,6 +319,7 @@ function buildInputControls(reportUri){
 										 .replace("{label}", data[i].state.options[n].label)
 										 .replace("{selected}", data[i].state.options[n].selected ? "selected":"");
 							}
+							
 							options = icTag.replace("{inputControlId}", data[i].id).
 											replace("{data}", JSON.stringify(data[i].slaveDependencies)).
 											replace("{master}", JSON.stringify(data[i].masterDependencies)).
@@ -327,8 +329,9 @@ function buildInputControls(reportUri){
 							ic = icTemplate.replace("{id}", data[i].id).
 											replace("{description}", data[i].description).
 											replace("{ic}",options);
-							console.log(JSON.stringify(data[i].slaveDependencies));				
-							//console.log(ic);
+											
+							console.log(JSON.stringify(data[i].slaveDependencies));
+							
 							$("#ic").append(ic);							
 						break;
 						case 'multiSelect':
@@ -337,11 +340,13 @@ function buildInputControls(reportUri){
 							var optionTag="<option value='{value}' {selected}>{label}</option>";
 							var options="";
 							var ic="";
+							
 							for(var n = 0; n < data[i].state.options.length; n++){
 								options +=optionTag.replace("{value}", data[i].state.options[n].value)
 										 .replace("{label}", data[i].state.options[n].label)
 										 .replace("{selected}", data[i].state.options[n].selected ? "selected":"");
 							}
+							
 							options = icTag.replace("{inputControlId}", data[i].id).
 											replace("{data}", JSON.stringify(data[i].slaveDependencies)).
 											replace("{master}", JSON.stringify(data[i].masterDependencies)).
@@ -369,6 +374,7 @@ function buildInputControls(reportUri){
 										 .replace("{type}", JSON.stringify(data[i].type))
 										 .replace("{checked}", data[i].state.options[n].selected ? "checked":"");
 							}
+							
 							options = icTag.replace("{inputControlId}", data[i].id).
 											replace("{options}", options);
 
@@ -383,8 +389,6 @@ function buildInputControls(reportUri){
 
 				//bind onChange events to appropriate input controls
 				for(var m = 0; m < data.length; m++){
-					console.log("binding to event");
-					console.log(data[m]);
 					var resourceName = "";
 					//detect a type of event that should be connected to the IC
 					switch(data[m].type) {
@@ -445,15 +449,10 @@ function buildInputControls(reportUri){
 									params_data[$(this).data('master')[d]] = [$("input[name*='" + $(this).data('master')[d] + "']").val()];
 								}
 							}
-										
-							//var reportUri = "/public/SME/Cascading_multi_select_topic";
-							//var report = v.report({ resource: reportUri, container: "#report"});
 							
 							var inputControls = v.inputControls({
 												resource: reportUri
 											});
-							
-							
 							
 							console.log("---------- params_data ----------");
 							console.log(params_data);
@@ -466,10 +465,10 @@ function buildInputControls(reportUri){
 							
 							function renderInputControls(data) {
 								console.log("---------- ic data ----------");
-								//console.log(JSON.stringify(data));
-
-								console.log($("select[name*='ic_").length);
-
+								//this block contains a logic that should just
+								//update existing input controls with sets of information
+								//that has just been retrieved from JasperReports Server
+								
 								for(var n = 0; n <  $("select[name*='ic_").length; n++ ){
 									//if(icName != $("select[name*='ic_")[n].name){
 											$('[name="'+ $("select[name*='ic_")[n].name +'"]').empty();
@@ -491,16 +490,6 @@ function buildInputControls(reportUri){
 								
 								console.log("---------- ic data ----------");
 							}
-							
-							/*
-							var report = v.report({ resource: reportUri, container: "#report" });
-							console.log("params data before rendering");
-							console.log(JSON.stringify(params_data));
-							console.log("params data before rendering");
-							report.params(params_data);
-							report.run();
-							*/
-							
 						});
 					}
 				}//if the report has input controls, continue processing
@@ -529,31 +518,35 @@ function manageFunctionalAndIcPanels(idArray, isVisible){
 }
 
 $('#testSolution').click(function(){
-   $(document).on('change', "input[name*='IS_IGNORE_PAGINATION']", function(){
-			console.log("radio click "+$(this).val());
-			
-   });
+	
 });
 
 function runReportWithSelectedParams(){
 visualize(
-	function (v) {	
-				console.log("report");
-				console.log(JSON.stringify(report));
-						
-							//var params_data = {};
-						
-							var reportUri = "/public/SME/Cascading_multi_select_topic";
-							//var report = v.report({ resource: reportUri, container: "#report"});
-							
-							//var report = v.report({ resource: reportUri, container: "#report" });
-							console.log("params data before rendering");
-							console.log(JSON.stringify(params_data));
-							console.log("params data before rendering");
-							report.params(params_data);
-							report.run();
-			
-	});//visualize			
+	function (v) {
+		var jsonInfoAboutObject = $("#forIC").data('ri');
+		
+		$("#report").empty();
+		
+		var reportLocal = v.report({
+				resource: jsonInfoAboutObject.uri,
+				container: "#report",
+				params: params_data,
+				events: {
+					reportCompleted: function(status){
+						console.log("Report status "+status);
+					},
+					changeTotalPages: function(totalPages) {
+						console.log("Total Pages:" + totalPages);
+						setFirstAndLastPageNumbers(1, totalPages);
+					}
+				},
+				error: function(error) {
+						console.log("Report error "+error);
+				}
+			});
+		report = reportLocal;
+	});
 }
 
 $('#applyValue').click(function(){
