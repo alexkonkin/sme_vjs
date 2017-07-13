@@ -239,7 +239,7 @@ if(isLoggedIn() == true){
 					},
 					changeTotalPages: function(totalPages) {
 						console.log("Total Pages:" + totalPages);
-						setFirstAndLastPageNumbers(1, totalPages);
+						setFirstAndLastPageNumbers(totalPages);
 					}
 				},
 				error: function(error) {
@@ -268,7 +268,7 @@ function runReport(){
 					},
 					changeTotalPages: function(totalPages) {
 						console.log("Total Pages:" + totalPages);
-						setFirstAndLastPageNumbers(1, totalPages);
+						setFirstAndLastPageNumbers(totalPages);
 					}
 				},
 				error: function(error) {
@@ -509,8 +509,11 @@ function buildInputControls(reportUri){
 	});
 }
 
-function setFirstAndLastPageNumbers(firstPageNumber, lastPageNumber){
-	$("#currentPage").val(firstPageNumber);
+function setFirstAndLastPageNumbers(lastPageNumber){
+	if (lastPageNumber == 0)
+		$("#currentPage").val(lastPageNumber);
+	else
+		$("#currentPage").val("1");
 	$("#totalPages").val(lastPageNumber);
 }
 
@@ -555,7 +558,7 @@ visualize(
 					},
 					changeTotalPages: function(totalPages) {
 						console.log("Total Pages:" + totalPages);
-						setFirstAndLastPageNumbers(1, totalPages);
+						setFirstAndLastPageNumbers(totalPages);
 					}
 				},
 				error: function(error) {
