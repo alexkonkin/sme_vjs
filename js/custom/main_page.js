@@ -3,6 +3,7 @@
 //is currently visible in the center panel of the application
 var report;
 var params_data;
+var applicationFolder = "/public/SME";
 var host="http://localhost:8630/jasperserver-pro";
 //var host="http://10.98.50.212:8630/jasperserver-pro";
 
@@ -22,7 +23,6 @@ $(document).ready(function(){
 						});
 						
 						clearListAndReportOutput();
-						
 					});
 				},
 				function(error){
@@ -73,12 +73,16 @@ function navigateNextPage(){
 	visualize(
 		function (v) {
 		var currentPage = report.pages() || 1;
-		report
-		.pages(++currentPage)
-		.run()
-		.fail(function(err) { alert(err); });
-
-		$("#currentPage").val(currentPage);
+		
+		if(currentPage < $("#totalPages").val()){
+			report
+			.pages(++currentPage)
+			.run()
+			.fail(function(err){ 
+					console.log(err);
+				});
+			$("#currentPage").val(currentPage);
+		}
 	});
 }
 
@@ -86,12 +90,16 @@ function navigatePreviousPage(){
 	visualize(
 		function (v) {
 		var currentPage = report.pages() || 1;
-		report
-		.pages(--currentPage)
-		.run()
-		.fail(function(err) { alert(err); });
-
-		$("#currentPage").val(currentPage);
+		
+		if( currentPage > 1){
+			report
+			.pages(--currentPage)
+			.run()
+			.fail(function(err) { 
+					console.log(err);
+				});
+			$("#currentPage").val(currentPage);
+		}
 	});
 }
 
@@ -142,6 +150,9 @@ $( "#target" ).submit(function( event ) {
 				$("#login").html(function (){
 					return $(this).html().replace("<span class=\"glyphicon glyphicon-log-in\"></span> Login", "<span class=\"glyphicon glyphicon-log-out\"></span> Logout"); 
 				});
+				$("#functCont").css("display",'block');
+				$("#icCont").css("display",'block');
+				$("#report").css("display",'block');
 				printListAndRunFirstItem();
 				
 		},
@@ -178,7 +189,7 @@ if(isLoggedIn() == true){
 			
 			var query = v.resourcesSearch({
 			server: host,
-			folderUri: "/public/SME",
+			folderUri: applicationFolder,
 			recursive: false,
 			runImmediately : false
 			});
@@ -310,7 +321,7 @@ function buildInputControls(reportUri){
 					switch(data[i].type) {
 						case 'singleSelect':
 							var icTemplate="<div id='cont_{id}' ><p>{description}</p>{ic}</div>";
-							var icTag="<select name='ic_{inputControlId}' data-slave='{data}' data-master='{master}' data-type={type}>{options}</select>;";
+							var icTag="<select name='ic_{inputControlId}' data-slave='{data}' data-master='{master}' data-type={type}>{options}</select>";
 							var optionTag="<option value='{value}' {selected}>{label}</option>";
 							var options="";
 							var ic="";
@@ -336,7 +347,7 @@ function buildInputControls(reportUri){
 						break;
 						case 'multiSelect':
 							var icTemplate="<div id='cont_{id}'><p>{description}</p>{ic}</div>";
-							var icTag="<select name='ic_{inputControlId}' data-slave='{data}' data-master='{master}' data-type={type} multiple>{options}</select>;";
+							var icTag="<select name='ic_{inputControlId}' data-slave='{data}' data-master='{master}' data-type={type} multiple>{options}</select>";
 							var optionTag="<option value='{value}' {selected}>{label}</option>";
 							var options="";
 							var ic="";
@@ -506,7 +517,13 @@ function setFirstAndLastPageNumbers(firstPageNumber, lastPageNumber){
 function clearListAndReportOutput(){
 	$("#reportsList").empty();
 	$("#report").empty();
-	
+	$("#ic").empty();
+	$("#currentPage").val("");
+	$("#totalPages").val("");
+	report = "";
+	$("#report").css("display",'none');
+	$("#functCont").css("display",'none');
+	$("#icCont").css("display",'none');
 }
 
 function manageFunctionalAndIcPanels(idArray, isVisible){
@@ -518,7 +535,7 @@ function manageFunctionalAndIcPanels(idArray, isVisible){
 }
 
 $('#testSolution').click(function(){
-	
+		$("#btnPrevious").prop("disabled",true);
 });
 
 function runReportWithSelectedParams(){
