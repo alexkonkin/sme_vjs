@@ -321,7 +321,7 @@ function buildInputControls(reportUri){
 					switch(data[i].type) {
 						case 'singleSelect':
 							var icTemplate="<div id='cont_{id}' ><p>{description}</p>{ic}</div>";
-							var icTag="<select name='ic_{inputControlId}' data-slave='{data}' data-master='{master}' data-type={type}>{options}</select>";
+							var icTag="<select name='ic_{inputControlId}' data-slave='{data}' data-master='{master}' data-type={type} class='form-control'>{options}</select>";
 							var optionTag="<option value='{value}' {selected}>{label}</option>";
 							var options="";
 							var ic="";
@@ -347,7 +347,7 @@ function buildInputControls(reportUri){
 						break;
 						case 'multiSelect':
 							var icTemplate="<div id='cont_{id}'><p>{description}</p>{ic}</div>";
-							var icTag="<select name='ic_{inputControlId}' data-slave='{data}' data-master='{master}' data-type={type} multiple>{options}</select>";
+							var icTag="<select name='ic_{inputControlId}' data-slave='{data}' data-master='{master}' data-type={type} multiple class='form-control'>{options}</select>";
 							var optionTag="<option value='{value}' {selected}>{label}</option>";
 							var options="";
 							var ic="";
