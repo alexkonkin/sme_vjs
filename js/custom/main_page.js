@@ -319,8 +319,35 @@ function buildInputControls(reportUri){
 				
 				for(var i = 0; i < data.length; i++){
 					switch(data[i].type) {
+					//singleValueText
+					//<input class="" value="CA" type="text">
+						case 'singleValueText':
+							var icTemplate="<div id='cont_{id}'><p title='{description}'>{label}</p>{ic}</div>";
+							var icTag="{options}";
+							var optionTag="<input type='text' name='{id}' data-slave='{data}' data-master='{master}' data-type={type} value='{value}'>";
+							var options="";
+							var ic="";
+							//for(var n = 0; n < data[i].length; n++){
+								options +=optionTag.replace("{value}", data[i].state.value)
+										 .replace("{label}", data[i].label)
+										 .replace("{id}", data[i].id)
+										 .replace("{data}", JSON.stringify(data[i].slaveDependencies))
+										 .replace("{master}", JSON.stringify(data[i].masterDependencies))
+										 .replace("{type}", JSON.stringify(data[i].type));
+							//}
+							
+							options = icTag.replace("{inputControlId}", data[i].id).
+											replace("{options}", options);
+
+							ic = icTemplate.replace("{id}", data[i].id).
+											replace("{description}", data[i].description).
+											replace("{label}", data[i].label).
+											replace("{ic}",options);
+							
+							$("#ic").append(ic);							
+						break;					
 						case 'singleSelect':
-							var icTemplate="<div id='cont_{id}' ><p>{description}</p>{ic}</div>";
+							var icTemplate="<div id='cont_{id}' ><p title='{description}'>{label}</p>{ic}</div>";
 							var icTag="<select name='ic_{inputControlId}' data-slave='{data}' data-master='{master}' data-type={type} class='form-control'>{options}</select>";
 							var optionTag="<option value='{value}' {selected}>{label}</option>";
 							var options="";
@@ -339,6 +366,7 @@ function buildInputControls(reportUri){
 
 							ic = icTemplate.replace("{id}", data[i].id).
 											replace("{description}", data[i].description).
+											replace("{label}", data[i].label).
 											replace("{ic}",options);
 											
 							console.log(JSON.stringify(data[i].slaveDependencies));
@@ -346,7 +374,7 @@ function buildInputControls(reportUri){
 							$("#ic").append(ic);							
 						break;
 						case 'multiSelect':
-							var icTemplate="<div id='cont_{id}'><p>{description}</p>{ic}</div>";
+							var icTemplate="<div id='cont_{id}'><p title='{description}'>{label}</p>{ic}</div>";
 							var icTag="<select name='ic_{inputControlId}' data-slave='{data}' data-master='{master}' data-type={type} multiple class='form-control'>{options}</select>";
 							var optionTag="<option value='{value}' {selected}>{label}</option>";
 							var options="";
@@ -366,12 +394,13 @@ function buildInputControls(reportUri){
 
 							ic = icTemplate.replace("{id}", data[i].id).
 											replace("{description}", data[i].description).
+											replace("{label}", data[i].label).
 											replace("{ic}",options);
 							
 							$("#ic").append(ic);							
 						break;
 						case 'singleSelectRadio':
-							var icTemplate="<div id='cont_{id}'><p>{description}</p>{ic}</div>";
+							var icTemplate="<div id='cont_{id}'><p title='{description}'>{label}</p>{ic}</div>";
 							var icTag="<form action='' id='ic_{inputControlId}'>{options}</form>";
 							var optionTag="<input type='radio' name='{id}' data-slave='{data}' data-master='{master}' data-type={type} value='{value}' {checked}> {label}<br>";
 							var options="";
@@ -390,6 +419,7 @@ function buildInputControls(reportUri){
 											replace("{options}", options);
 
 							ic = icTemplate.replace("{id}", data[i].id).
+											replace("{label}", data[i].label).
 											replace("{description}", data[i].description).
 											replace("{ic}",options);
 							
@@ -412,6 +442,9 @@ function buildInputControls(reportUri){
 						case 'singleSelectRadio':
 							resourceName = "input[name*='"+data[m].id+"']";
 						break;
+						case 'singleValueText':
+							resourceName = "input[name*='"+data[m].id+"']";
+						break;
 					}
 
 					$(document).on('change', resourceName, function(){
@@ -429,6 +462,9 @@ function buildInputControls(reportUri){
 							else if ($(this).data('type') == 'singleSelectRadio'){
 								params_data[$(this).attr('name')] = [$(this).val()];
 							}
+							else if ($(this).data('type') == 'singleValueText'){
+								params_data[$(this).attr('name')] = [$(this).val()];
+							}
 							
 							//master ic
 							for(var d = 0; d < $(this).data('master').length; d++){
@@ -443,7 +479,9 @@ function buildInputControls(reportUri){
 								else if ($("input[name*='" + $(this).data('master')[d] + "']").data('type') == 'singleSelectRadio'){
 									params_data[$(this).data('master')[d]] = [$("input[name*='" + $(this).data('master')[d] + "']").val()];
 								}
-	
+								else if ($("input[name*='" + $(this).data('master')[d] + "']").data('type') == 'singleValueText'){
+									params_data[$(this).data('master')[d]] = [$("input[name*='" + $(this).data('master')[d] + "']").val()];
+								}
 							}
 							
 							//slave
@@ -456,7 +494,10 @@ function buildInputControls(reportUri){
 								else if ($("select[name*='ic_" + $(this).data('slave')[e] + "']").data('type') == 'singleSelect'){
 									params_data[$(this).data('slave')[e]] = [$("select[name*='ic_" + $(this).data('slave')[e] + "']").val()];
 								}
-								else if ($("input[name*='" + $(this).data('master')[d] + "']").data('type') == 'singleSelectRadio'){
+								else if ($("input[name*='" + $(this).data('slave')[d] + "']").data('type') == 'singleSelectRadio'){
+									params_data[$(this).data('master')[d]] = [$("input[name*='" + $(this).data('master')[d] + "']").val()];
+								}
+								else if ($("input[name*='" + $(this).data('slave')[d] + "']").data('type') == 'singleValueText'){
 									params_data[$(this).data('master')[d]] = [$("input[name*='" + $(this).data('master')[d] + "']").val()];
 								}
 							}
