@@ -877,10 +877,16 @@ function buildInputControls1(reportUri, params_data1){
 }
 
 function setFirstAndLastPageNumbers(lastPageNumber){
-	if (lastPageNumber == 0)
+	if (lastPageNumber == 0){
 		$("#currentPage").val(lastPageNumber);
-	else
+		$("#message").css("display","block");
+		$("#menu1").prop("disabled",true);
+	}
+	else{
 		$("#currentPage").val("1");
+		$("#message").css("display","none");
+		$("#menu1").prop("disabled",false);
+	}
 	$("#totalPages").val(lastPageNumber);
 }
 
