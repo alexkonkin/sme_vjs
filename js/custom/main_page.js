@@ -885,6 +885,7 @@ function setFirstAndLastPageNumbers(lastPageNumber){
 	else{
 		$("#currentPage").val("1");
 		$("#message").css("display","none");
+
 		$("#menu1").prop("disabled",false);
 	}
 	$("#totalPages").val(lastPageNumber);
@@ -911,10 +912,7 @@ function manageFunctionalAndIcPanels(idArray, isVisible){
 }
 
 $('#testSolution').click(function(){
-		//$("#ic_EmployeeID").val("matt_id").change();
-		//$('#ic_EmployeeID').val('matt_id').attr("selected", "selected");
-		//console.log$("#ic_EmployeeID").val();
-		removeInputControlsAndEvents();
+
 });
 
 function runReportWithSelectedParams(){
