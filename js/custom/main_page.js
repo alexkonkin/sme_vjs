@@ -901,6 +901,7 @@ function clearListAndReportOutput(){
 	$("#report").css("display",'none');
 	$("#functCont").css("display",'none');
 	$("#icCont").css("display",'none');
+	$("#message").css("display",'none');
 }
 
 function manageFunctionalAndIcPanels(idArray, isVisible){
